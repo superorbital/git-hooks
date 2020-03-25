@@ -13,13 +13,13 @@ if [[ ! -f "$config" ]]; then
   exit 0
 fi
 
-if ! gitleaks --verbose --pretty --config="$config"; then
+if ! gitleaks --pretty --config="$config"; then
   cat <<-EOF
     caulking: Error: gitleaks has detected sensitive information in your changes.
     caulking: If you know what you are doing you can disable this check using:
     caulking:     git config --local hooks.gitleaks false
     caulking:     git commit ....
     caulking:     git config --local hooks.gitleaks true
-  EOF
+		EOF
   exit 2
 fi
