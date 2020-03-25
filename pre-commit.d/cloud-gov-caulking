@@ -2,14 +2,14 @@
 
 config="$HOME/src/github.com/cloud-gov/caulking/leaky-repo.toml"
 
-if [ "$(git config --bool hooks.gitleaks)" != "true" ]; then
-  # shellcheck disable=SC2016
-  echo 'gitleaks disabled.  Enable with `git config --local hooks.gitleaks true`'
+if [[ ! -f "$config" ]]; then
+  echo "caulking: Cannot find $config - continuing without running gitleaks"
   exit 0
 fi
 
-if [[ ! -f "$config" ]]; then
-  echo "Cannot find $config - continuing without running gitleaks"
+if [[ "$(git config --bool hooks.gitleaks)" != "true" ]]; then
+  # shellcheck disable=SC2016
+  echo 'caulking: gitleaks disabled.  Enable with `git config --local hooks.gitleaks true`'
   exit 0
 fi
 
