@@ -2,22 +2,24 @@
 
 config="$HOME/src/github.com/cloud-gov/caulking/leaky-repo.toml"
 
-if [ "$(git config --bool hooks.gitleaks)" == "true" ]; then
-  if [[ -f "$config" ]]; then
-    if ! gitleaks --verbose --pretty --config="$config"; then
-      cat <<-EOF
-				caulking: Error: gitleaks has detected sensitive information in your changes.
-				caulking: If you know what you are doing you can disable this check using:
-				caulking:     git config --local hooks.gitleaks false
-				caulking:     git commit ....
-				caulking:     git config --local hooks.gitleaks true
-			EOF
-      exit 2
-    fi
-  else
-    echo "Cannot find $config - continuing without running gitleaks"
-  fi
-else
+if [ "$(git config --bool hooks.gitleaks)" != "true" ]; then
   # shellcheck disable=SC2016
   echo 'gitleaks disabled.  Enable with `git config --local hooks.gitleaks true`'
+  exit 0
+fi
+
+if [[ ! -f "$config" ]]; then
+  echo "Cannot find $config - continuing without running gitleaks"
+  exit 0
+fi
+
+if ! gitleaks --verbose --pretty --config="$config"; then
+  cat <<-EOF
+    caulking: Error: gitleaks has detected sensitive information in your changes.
+    caulking: If you know what you are doing you can disable this check using:
+    caulking:     git config --local hooks.gitleaks false
+    caulking:     git commit ....
+    caulking:     git config --local hooks.gitleaks true
+  EOF
+  exit 2
 fi
