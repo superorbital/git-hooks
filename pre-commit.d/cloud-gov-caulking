@@ -13,13 +13,14 @@ if [[ ! -f "$config" ]]; then
   exit 0
 fi
 
-if ! gitleaks --pretty --config="$config"; then
+if ! output=$(gitleaks --verbose --pretty --config="$config" 2>&1); then
+  echo "$output" | sed 's/^.*\[[0-9:TZ-]\+\] //; s/^/caulking: /'
   cat <<-EOF
-    caulking: Error: gitleaks has detected sensitive information in your changes.
-    caulking: If you know what you are doing you can disable this check using:
-    caulking:     git config --local hooks.gitleaks false
-    caulking:     git commit ....
-    caulking:     git config --local hooks.gitleaks true
+		caulking:
+		caulking: If you know what you are doing you can disable this check using:
+		caulking:   git config --local hooks.gitleaks false
+		caulking:   git commit ....
+		caulking:   git config --local hooks.gitleaks true
 		EOF
   exit 2
 fi
