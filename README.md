@@ -19,26 +19,6 @@ And now that the hooks dir is outside of your repository, you can commit the glo
 
 ## INSTALLATION
 
-### Installing cred-alert-cli
-
-This repo comes with some hooks that depend on `cred-alert-cli`.
-
-To install the `cred-alert-cli` binary download the version for your OS
-([macOs][cred-alert-osx] or [Linux][cred-alert-linux]), rename it to `cred-alert-cli`,
-make it executable, and move it to a directory in `${PATH}`.
-
-```
-os_name=$(uname | awk '{print tolower($1)}')
-curl -o cred-alert-cli \
-  https://s3.amazonaws.com/cred-alert/cli/current-release/cred-alert-cli_${os_name}
-chmod 755 cred-alert-cli
-mv cred-alert-cli /usr/local/bin # <= or other directory in ${PATH}
-cred-alert-cli --help # <= make sure cred-alert-cli works.
-```
-
-[cred-alert-osx]: https://s3.amazonaws.com/cred-alert/cli/current-release/cred-alert-cli_darwin
-[cred-alert-linux]: https://s3.amazonaws.com/cred-alert/cli/current-release/cred-alert-cli_linux
-
 ### Installing git-hooks-core
 
 Clone this repo to your directory of choice, e.g. $HOME/workspace/git-hooks-core.
