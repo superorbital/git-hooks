@@ -3,7 +3,6 @@
 set -eu
 
 hook_name=$(basename "$0")
-[[ -v GIT_DEBUG ]] && echo "superorbital/git-hooks: In $hook_name"
 
 git_dir=$(git rev-parse --git-dir)
 if [ -f "$git_dir/hooks/$hook_name" ]; then
@@ -13,6 +12,5 @@ fi
 shopt -s nullglob
 HOOKS_DIR="$(dirname "$0")/$hook_name.d"
 for hook in "$HOOKS_DIR"/*; do
-  [[ -v GIT_DEBUG ]] && echo "superorbital/git-hooks: Running $hook"
   "$hook" "$@"
 done
