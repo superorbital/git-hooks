@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-stock_config="$HOME/src/github.com/cloud-gov/caulking/leaky-repo.toml"
 local_config="$HOME/src/github.com/cloud-gov/caulking/local.toml"
 
 if [[ "$(git config --bool hooks.gitleaks)" != "true" ]]; then
@@ -9,17 +8,12 @@ if [[ "$(git config --bool hooks.gitleaks)" != "true" ]]; then
   exit 0
 fi
 
-if [[ ! -f "$stock_config" ]]; then
-  echo "caulking: Cannot find $stock_config - continuing without running gitleaks"
-  exit 0
-fi
-
 if [[ ! -f "$local_config" ]]; then
   echo "caulking: Cannot find $local_config - continuing without running gitleaks"
   exit 0
 fi
 
-if ! output=$(gitleaks --verbose --pretty --config=<(cat "$stock_config" "$local_config") 2>&1); then
+if ! output=$(gitleaks --verbose --pretty --config="$local_config" 2>&1); then
   echo "$output" | sed 's/^.*\[[0-9:TZ-]\+\] //; s/^/caulking: /'
   cat <<-EOF
 		caulking:
