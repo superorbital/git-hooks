@@ -1,26 +1,26 @@
 #!/usr/bin/env bash
 
-local_config="$HOME/src/github.com/cloud-gov/caulking/local.toml"
+if [[ -v GITLEAKS_CONFIG ]]; then
+  if [[ "$(git config --bool hooks.gitleaks)" != "true" ]]; then
+    # shellcheck disable=SC2016
+    echo 'caulking: gitleaks disabled.  Enable with `git config --local hooks.gitleaks true`'
+    exit 0
+  fi
 
-if [[ "$(git config --bool hooks.gitleaks)" != "true" ]]; then
-  # shellcheck disable=SC2016
-  echo 'caulking: gitleaks disabled.  Enable with `git config --local hooks.gitleaks true`'
-  exit 0
-fi
+  if [[ ! -f "$GITLEAKS_CONFIG" ]]; then
+    echo "caulking: Cannot find $GITLEAKS_CONFIG - continuing without running gitleaks"
+    exit 0
+  fi
 
-if [[ ! -f "$local_config" ]]; then
-  echo "caulking: Cannot find $local_config - continuing without running gitleaks"
-  exit 0
-fi
-
-if ! output=$(gitleaks --verbose --pretty --config="$local_config" 2>&1); then
-  echo "$output" | sed 's/^.*\[[0-9:TZ-]\+\] //; s/^/caulking: /'
-  cat <<-EOF
-		caulking:
-		caulking: If you know what you are doing you can disable this check using:
-		caulking:   git config --local hooks.gitleaks false
-		caulking:   git commit ....
-		caulking:   git config --local hooks.gitleaks true
-		EOF
-  exit 2
+  if ! output=$(gitleaks --verbose --pretty --config="$GITLEAKS_CONFIG" 2>&1); then
+    echo "$output" | sed 's/^.*\[[0-9:TZ-]\+\] //; s/^/caulking: /'
+    cat <<-EOF
+			caulking:
+			caulking: If you know what you are doing you can disable this check using:
+			caulking:   git config --local hooks.gitleaks false
+			caulking:   git commit ....
+			caulking:   git config --local hooks.gitleaks true
+			EOF
+    exit 2
+  fi
 fi
