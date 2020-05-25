@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# This detects pytest files that include the focus marker.
+# https://superorbit.al/journal/focusing-on-pytest/
+
+if grep -RFl --include "test_*.py" pytest.mark.focus > /dev/null 2>&1; then
+  echo "Error: The following pytest files still have a pytest.mark.focus annotation:"
+  echo
+  grep -RFl --include "test_*.py" pytest.mark.focus
+  exit 2
+fi
